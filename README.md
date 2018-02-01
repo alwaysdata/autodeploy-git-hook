@@ -2,7 +2,7 @@
 
 A simple bash script to deploy on production using Git hooks.
 
-This script simply checkout the last version of a given branch (e.g a _production_ branch) to a working directory. It so update your files and ensure your website / service is properly updated.
+This script simply checkout the last version of a given branch (e.g a _production_ branch) to a working directory. It updates your files and ensure your website / service is properly updated.
 
 
 ## Install
@@ -18,9 +18,9 @@ $ chmod +x project.git/hooks/post-receive
 
 ## Configure
 
-The script embed some variables you need to define to get it working properly. They are delcared at the top of the `post-receive` file, feel free to adapt them to your needs:
+The script embed some variables you need to define to get it working properly. They are declared at the top of the `post-receive` file, feel free to adapt them to your needs:
 
-- `TARGET`: the redirectory where the files need to be deployed
+- `TARGET`: the directory where the files need to be deployed
 - `GIT_DIR`: the current git bare repository path
 - `BRANCH`: the branch to deploy (default to `production`)
 
@@ -58,6 +58,6 @@ Release under [MIT LICENSE].
 
 For more information, you can take a look at our blog post about [how to deploy using Git Hooks].
 
-[alwaysdata]: https://alwaysdata.com
+[alwaysdata]: https://www.alwaysdata.com
 [how to deploy using git hooks]: https://blog.alwaysdata.com/
 [mit license]: ./LICENSE
