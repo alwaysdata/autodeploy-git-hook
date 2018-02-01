@@ -38,7 +38,7 @@ In your local repository, simply define a new remote, then push your _production
 
 ```shell
 $ cd project
-$ git remote add deploy <account>@<account>-ssh.alwaysdata.net:~/project.git
+$ git remote add deploy <account>@ssh-<account>.alwaysdata.net:~/project.git
 $ git checkout production
 $ git push deploy production
 ```
