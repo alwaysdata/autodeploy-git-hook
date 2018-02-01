@@ -1,0 +1,53 @@
+#!/bin/bash
+###
+# CONFIG VARS
+###
+TARGET="/home/madslab/net.madslab/test"
+GIT_DIR="/home/madslab/data/test-deploy.git"
+BRANCH="production"
+RESTART=false
+API_KEY=""
+ACCOUNT=""
+SITE_ID=000000
+
+###
+# DO NOT EDIT BELOW UNLESS YOU KNOW WHAT YOU'RE DOING
+###
+while read oldrev newrev ref
+do
+	# only checking out the branch to deploy
+	if [[ $ref = refs/heads/$BRANCH ]];
+	then
+		echo "Ref '$ref' received."
+
+		if [ ! -d "$TARGET" ];
+		then
+			echo "'${TARGET}' dir is missing, creating it"
+			mkdir -p $TARGET
+		fi
+
+		echo "Deploying '${BRANCH}' branch to production"
+		git --work-tree=$TARGET --git-dir=$GIT_DIR checkout --force $BRANCH
+
+		if [ "$RESTART" = true ];
+		then
+			echo "Restarting your web server"
+			status=$(curl --basic --user "${API_KEY} account=${ACCOUNT}:" --data '' --request POST --silent --output /dev/null --write-out '%{http_code}' "https://api.alwaysdata.com/v1/site/${SITE_ID}/restart/")
+			if [ "$status" = 204 ];
+			then
+				echo "Your site is restarted"
+			else
+				echo "An error occured when restarting your site, try to restart it manually"
+				exit 1
+			fi
+		fi
+
+		exit 0
+	else
+		echo "You pushed '$ref' branch,"
+		echo "but you set '${BRANCH}' branch as deploy branch."
+		echo "Exiting without error."
+
+		exit 0
+	fi
+done
