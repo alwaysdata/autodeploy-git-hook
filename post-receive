@@ -11,6 +11,27 @@ API_KEY=""              # your api key you can find in your *profile* section
 ACCOUNT=""              # the account name your site is associated to
 PASSWORD=""             # the account password your site is associated to
 SITE_ID="000000"        # the reference ID of your site you can find in your *sites* section
+NPM_INSTALL_CHECK=false # a boolean to enable if your site is a _Node.js_ site, and if you want to automatically run `npm install` if your package.json changed since the last push (default to `false`)
+
+# Function checking if the "package.json" file has been changed since last push
+# MIT © Sindre Sorhus - sindresorhus.com / Adapted by J.M. Cléry for Alwaysdata
+npm_install_check() {
+	# git hook to run a command after `git push` if a specified file was changed
+	changed_files="$(git diff --name-only HEAD^ HEAD)"
+
+	check_run() {
+		if [ $(echo "$changed_files" | grep "$1") ]; then
+			cd $TARGET
+			echo "'package.json' has been updated! Running 'npm install' automatically for you..."
+			eval "$2"
+			cd $GIT_DIR
+		fi
+	}
+
+	# Run `npm install` ONLY if "package.json" has changed
+	# check_run package.json "npm install --silent --no-audit --no-progress > /dev/null"
+	check_run package.json "npm install > /dev/null"
+}
 
 ###
 # DO NOT EDIT BELOW UNLESS YOU KNOW WHAT YOU'RE DOING
@@ -27,6 +48,11 @@ while read oldrev newrev ref; do
 
 		echo "Deploying '${BRANCH}' branch to production"
 		git --work-tree=$TARGET --git-dir=$GIT_DIR checkout --force $BRANCH
+
+		# If it's a Node.js website and `npm install` needs to be trigerred
+		if [ $NPM_INSTALL_CHECK = true ]; then
+			npm_install_check
+		fi
 
 		if [ "$RESTART" = true ]; then
 			echo "Restarting your web server ..."

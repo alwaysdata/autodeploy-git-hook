@@ -31,7 +31,7 @@ In case you want to restart your app after deploy, you need to fill:
 - `ACCOUNT`: the account name your site is associated to
 - `PASSWORD`: the account password your site is associated to
 - `SITE_ID`: the reference ID of your site you can find in your _sites_ section
-
+- `NPM_INSTALL_CHECK`: a boolean to enable if your site is a _Node.js_ site, and if you want to automatically run `npm install` if your package.json changed since the last push (default to `false`)
 
 ## Use
 
